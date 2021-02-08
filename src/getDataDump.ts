@@ -13,24 +13,20 @@ interface QueryRes {
 
 function buildInsert(
     table: Table,
-    values: Array<string>,
-    format: (s: string) => string,
+    values: Array<string>
 ): string {
-    const sql = format(
-        [
-            `INSERT INTO \`${table.name}\` (\`${table.columnsOrdered.join(
-                '`,`',
-            )}\`)`,
-            `VALUES ${values.join(',')};`,
-        ].join(' '),
-    );
+    const sql = `INSERT INTO \`${table.name}\` (\`${table.columnsOrdered.join('`,`',)}\`) VALUES ${values.join(',')};`;
 
     // sql-formatter lib doesn't support the X'aaff' or b'01010' literals, and it adds a space in and breaks them
     // this undoes the wrapping we did to get around the formatting
     return sql.replace(/NOFORMAT_WRAP\("##(.+?)##"\)/g, '$1');
 }
-function buildInsertValue(row: QueryRes, table: Table): string {
-    return `(${table.columnsOrdered.map(c => row[c]).join(',')})`;
+function buildInsertValue(
+    row: QueryRes,
+    table: Table,
+    format: (s: string) => string
+): string {
+    return format(`(${table.columnsOrdered.map(c => row[c]).join(',')})`);
 }
 
 function executeSql(connection: mysql.Connection, sql: string): Promise<void> {
@@ -163,12 +159,12 @@ async function getDataDump(
                 // stream the data to the file
                 query.on('result', (row: QueryRes) => {
                     // build the values list
-                    rowQueue.push(buildInsertValue(row, table));
+                    rowQueue.push(buildInsertValue(row, table, format));
 
                     // if we've got a full queue
                     if (rowQueue.length === options.maxRowsPerInsertStatement) {
                         // create and write a fresh statement
-                        const insert = buildInsert(table, rowQueue, format);
+                        const insert = buildInsert(table, rowQueue);
                         saveChunk(insert);
                         rowQueue = [];
                     }
@@ -176,7 +172,7 @@ async function getDataDump(
                 query.on('end', () => {
                     // write the remaining rows to disk
                     if (rowQueue.length > 0) {
-                        const insert = buildInsert(table, rowQueue, format);
+                        const insert = buildInsert(table, rowQueue);
                         saveChunk(insert);
                         rowQueue = [];
                     }
