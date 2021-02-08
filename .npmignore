@@ -1,6 +1,0 @@
-**/*
-!dist/es.js
-!dist/umd.js
-!dist/mysqldump.d.ts
-!package.json
-!README.md

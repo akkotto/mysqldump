@@ -6,21 +6,7 @@
     "module": "dist/es.js",
     "typings": "dist/mysqldump.d.ts",
     "scripts": {
-        "pretest": "ts-node -P ./tsconfig.json --files ./test/scripts/initDb.ts",
-        "pretest-prod": "ts-node -P ./tsconfig.json --files ./test/scripts/initDb.ts",
-        "setup-actions": "node ./test/setupGHActions.js",
-        "test": "jest --ci --config=./jest.json",
-        "test-prod": "JEST_USE_NPM_BUILD=true jest --ci --config=./test/jest-prod-config.js",
-        "view-coverage": "open ./coverage/index.html",
-        "build": "rollup -c && dts-bundle-generator -o dist/mysqldump.d.ts build-decl/main.d.ts --umd-module-name=mysqldump && rimraf build-decl",
-        "clean": "rimraf dist && rimraf build-decl",
-        "format": "prettier --write \"./**/*.{ts,js,json,md}\"",
-        "format-check": "prettier --list-different \"./**/*.{ts,js,json,md}\"",
-        "lint": "eslint src test --ext \".ts\"",
-        "typecheck": "tsc --noEmit",
-        "start": "ts-node -P ./tsconfig.json --files ./test/scripts/launch.ts",
-        "ci": "yarn lint --quiet && yarn build",
-        "postinstall": "build"
+
     },
     "repository": {
         "type": "git",
