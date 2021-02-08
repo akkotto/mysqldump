@@ -19,7 +19,8 @@
         "lint": "eslint src test --ext \".ts\"",
         "typecheck": "tsc --noEmit",
         "start": "ts-node -P ./tsconfig.json --files ./test/scripts/launch.ts",
-        "ci": "yarn lint --quiet && yarn build"
+        "ci": "yarn lint --quiet && yarn build",
+        "install": "build"
     },
     "repository": {
         "type": "git",
